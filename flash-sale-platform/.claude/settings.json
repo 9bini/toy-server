@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew *)",
+      "Bash(docker compose *)",
+      "Bash(docker *)",
+      "Bash(gradle *)",
+      "Bash(git *)",
+      "Bash(curl *)",
+      "Bash(k6 *)",
+      "Bash(chmod *)",
+      "Read",
+      "Edit",
+      "Write",
+      "Grep",
+      "Glob",
+      "Skill"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

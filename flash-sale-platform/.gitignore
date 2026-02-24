@@ -1,0 +1,45 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+*.swo
+
+# Kotlin
+*.class
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 환경변수 / 시크릿
+.env
+.env.local
+*.secret
+
+# 로그
+*.log
+logs/
+
+# Docker 볼륨 데이터
+data/
+
+# 테스트 결과
+test-results/
+test-output/
+
+# 성능 테스트 결과 (원시 데이터)
+tests/performance/k6/results/
+
+# JFR 프로파일링
+*.jfr
+
+# GC 로그
+gc*.log
