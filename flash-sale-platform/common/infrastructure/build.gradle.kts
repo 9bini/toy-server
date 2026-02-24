@@ -1,8 +1,9 @@
-// 공유 인프라 모듈: Redis, Kafka 공통 설정 및 유틸리티
+// 공유 인프라 모듈: Redis, Kafka 공통 설정, 로깅, 유틸리티
 plugins {
-    kotlin("plugin.spring")
-    id("org.springframework.boot")
-    id("io.spring.dependency-management")
+    `java-library`
+    alias(libs.plugins.kotlin.spring)
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
 }
 
 tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
@@ -16,8 +17,14 @@ tasks.getByName<Jar>("jar") {
 dependencies {
     api(project(":common:domain"))
 
-    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
-    implementation("org.springframework.kafka:spring-kafka")
-    implementation("org.redisson:redisson-spring-boot-starter:3.40.2")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    // 서비스에서 transitive하게 접근해야 하는 핵심 의존성
+    api("org.springframework.boot:spring-boot-starter-webflux")
+    api("org.springframework.boot:spring-boot-starter-data-redis-reactive")
+    api("org.springframework.kafka:spring-kafka")
+    api("com.fasterxml.jackson.module:jackson-module-kotlin")
+    api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+
+    // 내부 구현 전용 (서비스에서 직접 접근 불필요)
+    implementation(libs.redisson.spring.boot.starter)
+    implementation(libs.logstash.logback.encoder)
 }
