@@ -51,10 +51,21 @@ $ARGUMENTS 기능을 전체 파이프라인으로 구현하세요.
 - 핵심 코드 흐름
 - 주의사항
 
-### 6단계: PR 생성
+### 6단계: 커밋 & PR 생성
+
+**커밋 전략 (최소 기능 단위, 한국어)**
+아래 단위로 분리하여 커밋합니다. 각 커밋은 빌드가 통과해야 합니다:
+1. `feat({service}): 도메인 모델 정의` - Entity, VO, sealed interface Error
+2. `feat({service}): 포트 및 유스케이스 구현` - Port In/Out + UseCase
+3. `feat({service}): 어댑터 구현` - Redis/Kafka/DB Adapter
+4. `feat({service}): API 엔드포인트 및 설정 추가` - Controller + Config
+5. `test({service}): 단위 및 통합 테스트 추가` - 테스트 코드
+
+커밋 메시지에 본문으로 핵심 변경 이유를 포함합니다.
+
+**PR 생성**
 - 브랜치: `feature/{service-name}/{feature-description}`
-- 커밋: `feat({service}): {한국어 설명}`
-- PR 제목: 70자 이내
+- PR 제목: 70자 이내 한국어
 - PR 본문: 설계 결정, 변경 파일, 테스트 결과
 
 ## 중단 조건

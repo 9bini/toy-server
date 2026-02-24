@@ -46,10 +46,52 @@ com.flashsale.{service-name}/
 └── config/            # Spring configuration
 ```
 
-## Git 워크플로우
-- 커밋 메시지: conventional commits (feat:, fix:, refactor:, test:, docs:, perf:)
-- 한국어 커밋 메시지 허용 (예: `feat: 주문 서비스 재고 차감 로직 구현`)
-- 브랜치: feature/{service-name}/{feature-description}
+## Git 워크플로우 & 커밋 전략
+
+### 커밋 원칙
+- **최소 기능 단위 커밋**: 하나의 커밋은 하나의 논리적 변경만 포함
+- **한국어 커밋 메시지**: conventional commits 형식으로 한국어 작성
+- **각 커밋은 빌드가 통과해야 함** (`./gradlew build` 성공 상태)
+- **커밋 전 반드시 빌드 검증** 후 커밋
+
+### 커밋 메시지 형식
+```
+{type}({scope}): {한국어 설명}
+
+{본문 - 변경 이유와 핵심 내용}
+
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+```
+
+### 커밋 타입
+| 타입 | 용도 | 예시 |
+|------|------|------|
+| `feat` | 새 기능 추가 | `feat(order): 재고 차감 Lua Script 구현` |
+| `fix` | 버그 수정 | `fix(queue): 대기열 순번 계산 오류 수정` |
+| `refactor` | 동작 변경 없는 구조 개선 | `refactor(payment): Saga 상태머신 분리` |
+| `test` | 테스트 추가/수정 | `test(order): 동시 주문 통합 테스트 추가` |
+| `perf` | 성능 개선 | `perf(gateway): Rate Limiter Lua Script 최적화` |
+| `docs` | 문서 변경 | `docs: API 스펙 문서 업데이트` |
+| `chore` | 빌드/설정 변경 | `chore: Gradle Version Catalog 도입` |
+
+### 커밋 분리 기준
+기능 구현 시 아래 단위로 분리:
+1. **도메인 모델** - Entity, VO, Error 정의
+2. **포트 & 유스케이스** - 인터페이스 + 비즈니스 로직
+3. **어댑터** - Redis/Kafka/DB 구현체
+4. **컨트롤러 & 설정** - API 엔드포인트 + Spring 설정
+5. **테스트** - 단위 + 통합 테스트
+
+인프라/빌드 변경 시:
+1. 설정 변경 단위별 분리 (의존성, 환경 설정, 자동화 등)
+
+### 브랜치 전략
+| 유형 | 패턴 | 예시 |
+|------|------|------|
+| 기능 | `feature/{service}/{description}` | `feature/order/stock-decrement` |
+| 핫픽스 | `hotfix/{service}/{description}` | `hotfix/queue/ranking-fix` |
+| 리팩토링 | `refactor/{service}/{description}` | `refactor/payment/saga-cleanup` |
+| 인프라 | `chore/{description}` | `chore/gradle-version-catalog` |
 
 ## IMPORTANT
 - 테스트 작성 후 반드시 실행하여 통과 확인

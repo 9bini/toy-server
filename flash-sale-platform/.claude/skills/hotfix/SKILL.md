@@ -34,9 +34,17 @@ $ARGUMENTS 버그를 핫픽스하세요.
 ./gradlew :services:{service}:build
 ```
 
-### 5. PR 생성
+### 5. 커밋 & PR 생성
+
+**커밋 전략 (최소 단위, 한국어)**
+핫픽스는 아래 단위로 분리하여 커밋합니다:
+1. `fix({service}): {버그 수정 내용}` - 코드 수정
+2. `test({service}): {버그} 회귀 테스트 추가` - 재현 테스트
+
+각 커밋은 빌드가 통과해야 합니다.
+
+**PR 생성**
 - 브랜치: `hotfix/{service-name}/{bug-description}`
-- 커밋: `fix({service}): {한국어 설명}`
 - PR 본문: 원인, 수정 내용, 재현 테스트, 영향 범위 포함
 
 ### 6. 변경사항 요약
