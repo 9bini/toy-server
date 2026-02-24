@@ -1,0 +1,18 @@
+<configuration>
+    <include resource="logback-flashsale.xml"/>
+
+    <!-- 개발 환경: 컬러 콘솔 출력 -->
+    <springProfile name="default,local,dev">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!-- 운영 환경: JSON 구조화 로그 (비동기) + 파일 -->
+    <springProfile name="prod,staging">
+        <root level="INFO">
+            <appender-ref ref="JSON"/>
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+</configuration>
