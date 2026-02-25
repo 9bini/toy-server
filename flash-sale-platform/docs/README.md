@@ -79,6 +79,40 @@
 
 ---
 
+## 인프라별 상세 문서 (docs/infra/)
+
+각 인프라 기술을 처음부터 이해할 수 있는 상세 가이드입니다.
+
+| 문서 | 기술 | 핵심 내용 |
+|------|------|----------|
+| [Docker Compose](infra/docker-compose.md) | Docker + Docker Compose | 컨테이너 개념, image/container, YAML 문법, healthcheck, overlay |
+| [Nginx](infra/nginx.md) | Nginx 1.27 | 리버스 프록시, Rate Limiting(Leaky Bucket), 로드밸런싱, SSE 프록시 |
+| [Redis](infra/redis.md) | Redis 7.4 | 자료구조 5종, 명령어, Lua Script, 영속성, Sentinel HA |
+| [Kafka](infra/kafka.md) | Apache Kafka 3.8.1 | Topic/Partition/Offset/Consumer Group, KRaft, Replication, DLQ |
+| [PostgreSQL](infra/postgresql.md) | PostgreSQL 16 | RDBMS 기초, SQL, 인덱스, 트랜잭션/ACID, WAL, 스트리밍 복제 |
+| [Prometheus + Grafana](infra/prometheus-grafana.md) | Prometheus + Grafana | 메트릭 타입, Pull 모델, PromQL, 대시보드, 알림 |
+
+## 라이브러리별 상세 문서 (docs/libs/)
+
+각 라이브러리를 처음부터 이해할 수 있는 상세 가이드입니다.
+
+| 문서 | 라이브러리 | 핵심 내용 |
+|------|-----------|----------|
+| [Kotlin Coroutines](libs/kotlin-coroutines.md) | kotlinx-coroutines 1.9.0 | suspend, 코루틴 빌더, 디스패처, Flow, 예외 처리 |
+| [Spring WebFlux](libs/spring-webflux.md) | spring-boot-starter-webflux | Netty, Mono/Flux, Controller, WebClient, SSE |
+| [Spring Data R2DBC](libs/spring-data-r2dbc.md) | spring-data-r2dbc | JDBC vs R2DBC, Repository, 코루틴 변환, 트랜잭션 |
+| [Flyway](libs/flyway.md) | flyway-core 10.22.0 | DB 마이그레이션, 파일 규칙, R2DBC 환경 설정 |
+| [Redisson](libs/redisson.md) | redisson 3.40.2 | 분산 락, RLock API, Watchdog, 재진입 |
+| [Spring Kafka](libs/spring-kafka.md) | spring-kafka | KafkaTemplate, @KafkaListener, 에러 처리, DLQ |
+| [Resilience4j](libs/resilience4j.md) | resilience4j 2.2.0 | Circuit Breaker, Retry, Rate Limiter |
+| [Jackson](libs/jackson.md) | jackson-module-kotlin + jsr310 | JSON 직렬화/역직렬화, data class, 날짜 타입 |
+| [kotlin-logging](libs/kotlin-logging.md) | kotlin-logging 7.0.3 + logstash | 로그 레벨, MDC, JSON 로그 |
+| [ktlint](libs/ktlint.md) | ktlint 12.1.2 | 코드 스타일 검사/수정, Gradle 명령어 |
+| [Micrometer + Actuator](libs/micrometer-actuator.md) | Micrometer + Actuator | 메트릭 API, Counter/Timer/Gauge, Prometheus 연동 |
+| [Kotest + MockK](libs/kotest-mockk.md) | Kotest 5.9.1 + MockK 1.13.13 | 테스트 스타일, Assertion, 모킹, Testcontainers |
+
+---
+
 ## 용어 사전 (빠른 참조)
 
 | 용어 | 설명 |
