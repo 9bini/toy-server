@@ -2,6 +2,8 @@
 
 > 이 프로젝트에서 사용하는 핵심 기술들을 이해하기 위한 학습 가이드입니다.
 > 각 문서는 **개념 설명 → 이 프로젝트에서의 활용**  순서로 구성되어 있습니다.
+>
+> **바로 개발을 시작하려면**: [QUICK-START.md](QUICK-START.md) → [PROJECT-STRUCTURE.md](PROJECT-STRUCTURE.md) → [기능 추가 매뉴얼](#기능-추가-매뉴얼-docsguides)
 
 ---
 
@@ -76,6 +78,33 @@
 - **결제 실패 시 복구**: 재고 복원 필요 → Saga 패턴 (보상 트랜잭션)
 - **서비스 장애 전파 방지**: 하나가 죽어도 전체는 유지 → Resilience4j (서킷 브레이커)
 - **봇/매크로 차단**: 불공정 접근 방지 → Nginx + Redis Rate Limiting
+
+---
+
+## 실전 개발 가이드
+
+프로젝트를 실행하고 코드를 작성하기 위한 필수 문서입니다.
+
+| 문서 | 내용 |
+|------|------|
+| **[QUICK-START.md](QUICK-START.md)** | 5분 안에 프로젝트 실행하기 (인프라 → 빌드 → 서비스 실행 → 상태 확인) |
+| **[PROJECT-STRUCTURE.md](PROJECT-STRUCTURE.md)** | 프로젝트 구조, 모듈 의존성, 네이밍 규칙, 공통 모듈 상세, 구현 순서 |
+
+---
+
+## 기능 추가 매뉴얼 (docs/guides/)
+
+새로운 기능을 추가할 때 참고하는 단계별 가이드입니다. 모든 예제는 이 프로젝트의 실제 코드 패턴을 기반으로 합니다.
+
+| 문서 | 주제 | 예제 |
+|------|------|------|
+| **[API 엔드포인트 추가](guides/add-api-endpoint.md)** | 새 API를 헥사고날 아키텍처로 구현 | order-service의 주문 생성 API |
+| **[Kafka Consumer 추가](guides/add-kafka-consumer.md)** | 이벤트 수신 + 멱등성 + DLQ | payment-service의 주문 이벤트 수신 |
+| **[Redis 연산 추가](guides/add-redis-operation.md)** | Lua Script, 분산 락, 대기열, Rate Limiting | 4가지 Redis 패턴 |
+| **[DB 엔티티 추가](guides/add-db-entity.md)** | Flyway 마이그레이션 + R2DBC 엔티티 | order-service의 orders 테이블 |
+| **[서킷 브레이커/재시도 추가](guides/add-resilience-pattern.md)** | Resilience4j 설정 + Prometheus 메트릭 | payment-service의 결제 API 호출 |
+| **[Saga 패턴 구현](guides/add-saga-pattern.md)** | 분산 트랜잭션 + 보상 트랜잭션 | 주문→재고→결제 플로우 |
+| **[테스트 작성](guides/add-test.md)** | 단위/통합/E2E 테스트 | Kotest + MockK + Testcontainers |
 
 ---
 
