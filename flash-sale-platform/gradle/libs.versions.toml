@@ -1,12 +1,12 @@
 [versions]
 # Language & Framework
-kotlin = "2.0.21"
+kotlin = "2.3.10"
 spring-boot = "3.4.1"
 spring-dependency-management = "1.1.7"
 ktlint-gradle = "12.3.0"
 
 # Coroutines
-coroutines = "1.9.0"
+coroutines = "1.10.2"
 
 # Logging
 kotlin-logging = "7.0.3"
