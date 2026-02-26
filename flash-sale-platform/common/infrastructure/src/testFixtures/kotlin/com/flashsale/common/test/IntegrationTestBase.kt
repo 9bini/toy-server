@@ -39,7 +39,7 @@ abstract class IntegrationTestBase {
 
         // --- PostgreSQL ---
         @JvmStatic
-        val postgres: PostgreSQLContainer<*> =
+        val postgres: PostgreSQLContainer =
             PostgreSQLContainer("postgres:16-alpine")
                 .withDatabaseName("flashsale")
                 .withUsername("flashsale")
