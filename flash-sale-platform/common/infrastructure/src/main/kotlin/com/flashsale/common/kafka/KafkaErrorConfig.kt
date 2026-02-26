@@ -28,9 +28,10 @@ class KafkaErrorConfig {
 
     @Bean
     fun kafkaErrorHandler(kafkaOperations: KafkaOperations<Any, Any>): CommonErrorHandler {
-        val recoverer = DeadLetterPublishingRecoverer(kafkaOperations) { record: ConsumerRecord<*, *>, _: Exception ->
-            ProducerRecord(KafkaTopics.dlq(record.topic()), record.key(), record.value())
-        }
+        val recoverer =
+            DeadLetterPublishingRecoverer(kafkaOperations) { record: ConsumerRecord<*, *>, _: Exception ->
+                ProducerRecord(KafkaTopics.dlq(record.topic()), record.key(), record.value())
+            }
 
         // 3회 재시도, 1초 간격. 이후 DLQ로 전송
         return DefaultErrorHandler(recoverer, FixedBackOff(1000L, 2L)).apply {
