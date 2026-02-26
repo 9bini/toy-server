@@ -1,9 +1,9 @@
 plugins {
-    kotlin("jvm") version "2.0.21" apply false
-    kotlin("plugin.spring") version "2.0.21" apply false
-    id("org.springframework.boot") version "3.4.1" apply false
-    id("io.spring.dependency-management") version "1.1.7" apply false
-    id("org.jlleitschuh.gradle.ktlint") version "12.1.2" apply false
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.spring) apply false
+    alias(libs.plugins.spring.boot) apply false
+    alias(libs.plugins.spring.dependency.management) apply false
+    alias(libs.plugins.ktlint) apply false
 }
 
 allprojects {
@@ -19,10 +19,13 @@ subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
+    configure<org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension> {
+        jvmToolchain(21)
+    }
+
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         compilerOptions {
             freeCompilerArgs.add("-Xjsr305=strict")
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
         }
     }
 
@@ -31,17 +34,33 @@ subprojects {
     }
 
     dependencies {
-        val kotlinCoroutinesVersion = "1.9.0"
-        val kotestVersion = "5.9.1"
-        val mockkVersion = "1.13.13"
+        "implementation"(rootProject.libs.bundles.coroutines)
+        "implementation"(rootProject.libs.kotlin.logging)
 
-        "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinCoroutinesVersion")
-        "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$kotlinCoroutinesVersion")
+        "testImplementation"(rootProject.libs.bundles.kotest)
+        "testImplementation"(rootProject.libs.kotest.extensions.spring)
+        "testImplementation"(rootProject.libs.mockk)
+        "testImplementation"(rootProject.libs.coroutines.test)
+    }
 
-        "testImplementation"("io.kotest:kotest-runner-junit5:$kotestVersion")
-        "testImplementation"("io.kotest:kotest-assertions-core:$kotestVersion")
-        "testImplementation"("io.kotest:kotest-property:$kotestVersion")
-        "testImplementation"("io.mockk:mockk:$mockkVersion")
-        "testImplementation"("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinCoroutinesVersion")
+    // Spring Boot 모듈: 컴파일 타임 컴포넌트 인덱싱으로 시작 시간 단축
+    plugins.withId("org.springframework.boot") {
+        dependencies {
+            "annotationProcessor"("org.springframework:spring-context-indexer")
+        }
+    }
+
+    // 서비스 모듈 공통 의존성 (actuator, reactor, prometheus, 테스트)
+    if (project.path.startsWith(":services:")) {
+        dependencies {
+            "implementation"("org.springframework.boot:spring-boot-starter-actuator")
+            "implementation"("io.projectreactor.kotlin:reactor-kotlin-extensions")
+            "implementation"("io.micrometer:micrometer-registry-prometheus")
+
+            "testImplementation"("org.springframework.boot:spring-boot-starter-test") {
+                (this as ExternalModuleDependency).exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+            }
+            "testImplementation"("io.projectreactor:reactor-test")
+        }
     }
 }
