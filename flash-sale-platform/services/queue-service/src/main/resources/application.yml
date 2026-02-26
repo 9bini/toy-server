@@ -18,18 +18,6 @@ spring:
           max-idle: 16
           min-idle: 8
 
-# Resilience4j: 대기열 서비스는 Redis 장애 시 서킷 브레이커 적용
-resilience4j:
-  circuitbreaker:
-    instances:
-      redis-queue:
-        sliding-window-type: COUNT_BASED
-        sliding-window-size: 100
-        failure-rate-threshold: 50
-        wait-duration-in-open-state: 10s
-        permitted-number-of-calls-in-half-open-state: 10
-        minimum-number-of-calls: 20
-
 management:
   endpoints:
     web:
@@ -38,7 +26,7 @@ management:
   endpoint:
     health:
       show-details: when-authorized
-  metrics:
-    export:
-      prometheus:
+  prometheus:
+    metrics:
+      export:
         enabled: true

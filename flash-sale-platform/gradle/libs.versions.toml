@@ -1,7 +1,7 @@
 [versions]
 # Language & Framework
 kotlin = "2.3.10"
-spring-boot = "3.4.1"
+spring-boot = "4.0.3"
 spring-dependency-management = "1.1.7"
 ktlint-gradle = "12.3.0"
 
@@ -11,9 +11,6 @@ coroutines = "1.10.2"
 # Logging
 kotlin-logging = "7.0.13"
 logstash-logback = "9.0"
-
-# Resilience
-resilience4j = "2.3.0"
 
 # Redis
 redisson = "4.2.0"
@@ -42,12 +39,7 @@ kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = 
 logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstash-logback" }
 
 # --- Jackson ---
-jackson-module-blackbird = { module = "com.fasterxml.jackson.module:jackson-module-blackbird" }
-
-# --- Resilience ---
-resilience4j-spring-boot3 = { module = "io.github.resilience4j:resilience4j-spring-boot3", version.ref = "resilience4j" }
-resilience4j-reactor = { module = "io.github.resilience4j:resilience4j-reactor", version.ref = "resilience4j" }
-resilience4j-kotlin = { module = "io.github.resilience4j:resilience4j-kotlin", version.ref = "resilience4j" }
+jackson-module-blackbird = { module = "tools.jackson.module:jackson-module-blackbird" }
 
 # --- Redis ---
 redisson-spring-boot-starter = { module = "org.redisson:redisson-spring-boot-starter", version.ref = "redisson" }
@@ -76,7 +68,6 @@ coroutines = ["coroutines-core", "coroutines-reactor", "coroutines-slf4j"]
 kotest = ["kotest-runner-junit5", "kotest-assertions-core", "kotest-property"]
 testcontainers-kafka-redis = ["testcontainers-core", "testcontainers-kafka", "testcontainers-junit-jupiter", "redis-testcontainers"]
 testcontainers-full = ["testcontainers-core", "testcontainers-kafka", "testcontainers-junit-jupiter", "testcontainers-postgresql", "testcontainers-r2dbc", "redis-testcontainers"]
-resilience4j = ["resilience4j-spring-boot3", "resilience4j-reactor", "resilience4j-kotlin"]
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

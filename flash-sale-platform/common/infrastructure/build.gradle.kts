@@ -1,4 +1,4 @@
-// 공유 인프라 모듈: Redis, Kafka 공통 설정, 로깅, 유틸리티, Resilience4j
+// 공유 인프라 모듈: Redis, Kafka 공통 설정, 로깅, 유틸리티
 plugins {
     `java-library`
     `java-test-fixtures`
@@ -22,13 +22,8 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-webflux")
     api("org.springframework.boot:spring-boot-starter-data-redis-reactive")
     api("org.springframework.kafka:spring-kafka")
-    api("com.fasterxml.jackson.module:jackson-module-kotlin")
-    api("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+    api("tools.jackson.module:jackson-module-kotlin")
     api(libs.jackson.module.blackbird)
-
-    // Resilience4j: 서킷 브레이커, Rate Limiter, Retry
-    api(libs.bundles.resilience4j)
-    api("org.springframework.boot:spring-boot-starter-aop")
 
     // 내부 구현 전용 (서비스에서 직접 접근 불필요)
     implementation(libs.redisson.spring.boot.starter)
