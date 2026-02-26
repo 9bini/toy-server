@@ -2,7 +2,6 @@ name: Flash Sale Platform CI
 
 on:
   push:
-    branches: [main]
     paths:
       - 'flash-sale-platform/**'
   pull_request:
