@@ -35,6 +35,7 @@ Kotlin + Spring WebFlux + Coroutines 기반 마이크로서비스 아키텍처.
 - 외부 호출(결제 API, DB 등)에는 withTimeout + 재시도 설정
 - sealed class / sealed interface로 에러 타입 정의
 - 문서와 주석은 한국어, 코드(변수명/클래스명/함수명)는 영어
+- 이 프로젝트는 최신 기술 실습 목적 — Spring Boot/Kotlin/라이브러리의 최신 안정 버전 기능 우선 활용
 
 ## 패키지 구조 (각 서비스)
 ```
