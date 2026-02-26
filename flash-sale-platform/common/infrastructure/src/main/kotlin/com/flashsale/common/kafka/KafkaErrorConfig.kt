@@ -2,7 +2,7 @@ package com.flashsale.common.kafka
 
 import com.flashsale.common.logging.Log
 import org.apache.kafka.clients.consumer.ConsumerRecord
-import org.apache.kafka.clients.producer.ProducerRecord
+import org.apache.kafka.common.TopicPartition
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -30,7 +30,7 @@ class KafkaErrorConfig {
     fun kafkaErrorHandler(kafkaOperations: KafkaOperations<Any, Any>): CommonErrorHandler {
         val recoverer =
             DeadLetterPublishingRecoverer(kafkaOperations) { record: ConsumerRecord<*, *>, _: Exception ->
-                ProducerRecord(KafkaTopics.dlq(record.topic()), record.key(), record.value())
+                TopicPartition(KafkaTopics.dlq(record.topic()), record.partition())
             }
 
         // 3회 재시도, 1초 간격. 이후 DLQ로 전송
