@@ -3,13 +3,6 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
     }
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == "org.jlleitschuh.gradle.ktlint") {
-                useModule("org.jlleitschuh.gradle:ktlint-gradle:${requested.version}")
-            }
-        }
-    }
 }
 
 rootProject.name = "flash-sale-platform"
