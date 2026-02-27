@@ -29,14 +29,14 @@ class KafkaErrorConfig {
     @Bean
     fun kafkaErrorHandler(kafkaOperations: KafkaOperations<Any, Any>): CommonErrorHandler {
         val recoverer =
-            DeadLetterPublishingRecoverer(kafkaOperations) { record: ConsumerRecord<*, *>, _: Exception ->
+            DeadLetterPublishingRecoverer(kafkaOperations) { record: ConsumerRecord<*, *>, _: Exception? ->
                 TopicPartition(KafkaTopics.dlq(record.topic()), record.partition())
             }
 
         // 3회 재시도, 1초 간격. 이후 DLQ로 전송
         return DefaultErrorHandler(recoverer, FixedBackOff(1000L, 2L)).apply {
             setRetryListeners({ record, ex, attempt ->
-                logger.warn { "Kafka 메시지 재시도 ${attempt}회: topic=${record?.topic()}, error=${ex.message}" }
+                logger.warn { "Kafka 메시지 재시도 ${attempt}회: topic=${record?.topic()}, error=${ex?.message}" }
             })
         }
     }

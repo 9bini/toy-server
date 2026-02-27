@@ -22,6 +22,7 @@ model: sonnet
 - `withTimeout`으로 모든 외부 호출에 타임아웃 적용
 - `GlobalScope` 절대 금지
 - Context 전파 이해: CoroutineContext, Job hierarchy
+- 이 프로젝트는 최신 기술 실습 목적 — Kotlin과 Spring Boot의 최신 안정 버전 기능을 적극 활용
 
 ## 코드 리뷰 시 주의점
 - Dispatcher 선택이 적절한가

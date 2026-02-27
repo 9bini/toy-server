@@ -21,6 +21,7 @@ model: sonnet
 - 환경별 설정 분리 (application-{profile}.yml)
 - 시크릿은 환경변수로 관리, 코드에 하드코딩 금지
 - 데이터 볼륨은 named volume 사용
+- 이 프로젝트는 최신 기술 실습 목적 — Docker 이미지, 인프라 도구의 최신 안정 버전 사용
 
 ## docker-compose 관리
 - 인프라 시작: `docker compose up -d`

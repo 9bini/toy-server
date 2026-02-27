@@ -18,15 +18,6 @@ spring:
           max-idle: 8
           min-idle: 4
 
-# Resilience4j: Rate Limiter (앱 레벨 2차 방어선, Nginx가 1차)
-resilience4j:
-  ratelimiter:
-    instances:
-      gateway-default:
-        limit-for-period: 1000
-        limit-refresh-period: 1s
-        timeout-duration: 0s
-
 management:
   endpoints:
     web:
@@ -35,7 +26,7 @@ management:
   endpoint:
     health:
       show-details: when-authorized
-  metrics:
-    export:
-      prometheus:
+  prometheus:
+    metrics:
+      export:
         enabled: true

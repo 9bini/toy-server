@@ -5,8 +5,8 @@ import com.flashsale.common.logging.MdcKeys
 import kotlinx.coroutines.TimeoutCancellationException
 import org.slf4j.MDC
 import org.springframework.boot.autoconfigure.web.WebProperties
-import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler
-import org.springframework.boot.web.reactive.error.ErrorAttributes
+import org.springframework.boot.webflux.autoconfigure.error.AbstractErrorWebExceptionHandler
+import org.springframework.boot.webflux.error.ErrorAttributes
 import org.springframework.context.ApplicationContext
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
@@ -52,7 +52,7 @@ class GlobalErrorHandler(
         }
 
     private fun renderError(request: ServerRequest): Mono<ServerResponse> {
-        val error = getError(request)
+        val error = getError(request) ?: RuntimeException("Unknown error")
         val status = resolveStatus(error)
         val code = resolveCode(error)
         val message = resolveMessage(error, status)
@@ -72,7 +72,8 @@ class GlobalErrorHandler(
                 timestamp = Instant.now(),
             )
 
-        return ServerResponse.status(status)
+        return ServerResponse
+            .status(status)
             .contentType(MediaType.APPLICATION_JSON)
             .bodyValue(errorResponse)
     }

@@ -51,35 +51,6 @@ spring:
       properties:
         spring.json.trusted.packages: "com.flashsale.*"
 
-# Resilience4j: 결제 API는 서킷 브레이커 + 재시도 필수
-resilience4j:
-  circuitbreaker:
-    instances:
-      payment-api:
-        sliding-window-type: TIME_BASED
-        sliding-window-size: 30
-        failure-rate-threshold: 50
-        wait-duration-in-open-state: 15s
-        permitted-number-of-calls-in-half-open-state: 5
-        minimum-number-of-calls: 10
-        slow-call-duration-threshold: 3s
-        slow-call-rate-threshold: 80
-      payment-db:
-        sliding-window-type: COUNT_BASED
-        sliding-window-size: 50
-        failure-rate-threshold: 60
-        wait-duration-in-open-state: 15s
-        permitted-number-of-calls-in-half-open-state: 5
-        minimum-number-of-calls: 10
-  retry:
-    instances:
-      payment-api:
-        max-attempts: 2
-        wait-duration: 1s
-      kafka-produce:
-        max-attempts: 3
-        wait-duration: 500ms
-
 management:
   endpoints:
     web:
@@ -88,7 +59,7 @@ management:
   endpoint:
     health:
       show-details: when-authorized
-  metrics:
-    export:
-      prometheus:
+  prometheus:
+    metrics:
+      export:
         enabled: true
