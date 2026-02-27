@@ -41,14 +41,10 @@ jobs:
       - name: Build (lint + compile + test)
         run: ./gradlew build --stacktrace 2>&1 | tee build-output.txt; exit ${PIPESTATUS[0]}
 
-      - name: Show build error (last 100 lines)
+      - name: Show build error
         if: failure()
-        run: tail -100 build-output.txt
-
-      - name: Upload build output
-        if: failure()
-        uses: actions/upload-artifact@v6
-        with:
-          name: build-output
-          path: flash-sale-platform/build-output.txt
-          retention-days: 7
+        run: |
+          echo '## Build Error' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -80 build-output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
