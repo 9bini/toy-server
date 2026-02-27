@@ -44,4 +44,6 @@ jobs:
       - name: Show build error
         if: failure()
         run: |
-          echo "::error::BUILD_ERROR_START $(tail -60 build-output.txt) BUILD_ERROR_END"
+          grep -B2 -A15 'What went wrong\|FAILURE\|FAILED\|BUILD FAILED' build-output.txt | head -40 | while IFS= read -r line; do
+            echo "::error::$line"
+          done
