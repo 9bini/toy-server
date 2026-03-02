@@ -13,7 +13,7 @@ kotlin-logging = "7.0.13"
 logstash-logback = "9.0"
 
 # Redis
-redisson = "4.2.0"
+redisson = "4.3.0"
 
 # Database
 r2dbc-postgresql = "1.1.1.RELEASE"
