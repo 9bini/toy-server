@@ -37,9 +37,9 @@ class SortedSetQueueController(
     suspend fun joinQueue(@RequestParam userId: String): Map<String, Any> {
         val score = System.currentTimeMillis().toDouble()
 
-        // NX = 이미 존재하면 추가하지 않음 (중복 방지)
+        // add()는 새로 추가되면 true, 이미 존재하면 false 반환
         val added = redisTemplate.opsForZSet()
-            .addIfAbsent(QUEUE_KEY, userId, score)
+            .add(QUEUE_KEY, userId, score)
             .awaitSingle()
 
         val rank = redisTemplate.opsForZSet()

@@ -71,7 +71,7 @@ suspend fun sequentialExecution() {
     val time = measureTimeMillis {
         val name = fetchUserName()   // 200ms 대기
         val score = fetchUserScore() // 300ms 대기
-        println("$name: $score점")
+        println("$name: ${score}점")
     }
     println("순차 실행 시간: ${time}ms") // ~500ms
 }
