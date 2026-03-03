@@ -1,0 +1,29 @@
+server:
+  port: 8093
+
+spring:
+  application:
+    name: kafka-learning
+
+  kafka:
+    bootstrap-servers: localhost:9093
+
+    # Producer 설정
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all                        # 모든 리플리카 확인 후 성공
+      properties:
+        enable.idempotence: true       # 중복 발행 방지
+        max.in.flight.requests.per.connection: 5
+
+    # Consumer 설정
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest      # 처음부터 읽기 (latest: 새 메시지만)
+      enable-auto-commit: true         # 학습용은 auto commit (프로덕션은 manual)
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false

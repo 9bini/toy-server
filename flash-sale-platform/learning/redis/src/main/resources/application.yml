@@ -1,0 +1,15 @@
+server:
+  port: 8092
+
+spring:
+  application:
+    name: redis-learning
+  data:
+    redis:
+      host: localhost
+      port: 6380
+
+# Redisson 설정
+redisson:
+  singleServerConfig:
+    address: "redis://localhost:6380"

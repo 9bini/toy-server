@@ -20,3 +20,11 @@ include("services:notification-service")
 
 // 통합 테스트
 include("tests:integration")
+
+// 학습 모듈
+include("learning:kotlin-coroutines")
+include("learning:spring-webflux")
+include("learning:r2dbc")
+include("learning:redis")
+include("learning:kafka")
+include("learning:testing")

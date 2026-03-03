@@ -1,0 +1,26 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: r2dbc-learning
+
+  # R2DBC 연결 설정
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5433/learning
+    username: user
+    password: pass
+
+  # Flyway 마이그레이션 (JDBC 드라이버 사용)
+  flyway:
+    enabled: true
+    url: jdbc:postgresql://localhost:5433/learning
+    user: user
+    password: pass
+    locations: classpath:db/migration
+
+  # 감사(Audit) 기능 활성화 (@CreatedDate, @LastModifiedDate)
+  data:
+    r2dbc:
+      repositories:
+        enabled: true

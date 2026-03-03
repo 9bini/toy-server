@@ -1,0 +1,9 @@
+server:
+  port: 8090  # 다른 서비스와 충돌 방지
+
+spring:
+  application:
+    name: webflux-learning
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
