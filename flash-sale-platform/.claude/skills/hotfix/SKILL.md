@@ -1,51 +1,51 @@
 ---
 name: hotfix
-description: 빠른 버그 수정 워크플로우. 원인 분석 → 최소 변경 수정 → 회귀 테스트 추가 → PR 생성을 신속하게 수행합니다.
+description: Quick bug fix workflow. Performs root cause analysis → minimal change fix → regression test addition → PR creation rapidly.
 argument-hint: [error-description-or-log]
 ---
 
-$ARGUMENTS 버그를 핫픽스하세요.
+$ARGUMENTS Apply a hotfix for the bug.
 
-## 프로세스
+## Process
 
-### 1. 원인 분석
-- 에러 로그/스택트레이스에서 핵심 정보 추출
-- 관련 코드 빠르게 탐색 (Grep + Read)
-- 근본 원인 식별 (증상이 아닌 원인)
-- 영향 범위 파악
+### 1. Root Cause Analysis
+- Extract key information from error logs/stack traces
+- Quickly explore related code (Grep + Read)
+- Identify root cause (not symptoms)
+- Determine impact scope
 
-### 2. 최소 변경 수정
-- 영향 범위를 최소화하는 수정만 적용
-- 관련 없는 리팩토링 금지
-- 사이드 이펙트 확인
-- 수정 코드에 한국어 주석으로 "왜 이렇게 수정했는지" 설명
+### 2. Minimal Change Fix
+- Apply only fixes that minimize impact scope
+- No unrelated refactoring
+- Check for side effects
+- Add comments in the fix code explaining "why it was fixed this way"
 
-### 3. 회귀 테스트 추가
-- 이 버그를 정확히 재현하는 테스트 작성
-- 수정 전에는 실패, 수정 후에는 통과하는 테스트
-- 기존 테스트 전체 실행하여 통과 확인:
+### 3. Add Regression Test
+- Write a test that exactly reproduces this bug
+- The test should fail before the fix and pass after the fix
+- Run all existing tests to confirm they pass:
   ```bash
   ./gradlew :services:{service}:test
   ```
 
-### 4. 검증
+### 4. Verification
 ```bash
 ./gradlew :services:{service}:ktlintFormat
 ./gradlew :services:{service}:build
 ```
 
-### 5. 커밋 & PR 생성
+### 5. Commit & PR Creation
 
-**커밋 전략 (최소 단위, 한국어)**
-핫픽스는 아래 단위로 분리하여 커밋합니다:
-1. `fix({service}): {버그 수정 내용}` - 코드 수정
-2. `test({service}): {버그} 회귀 테스트 추가` - 재현 테스트
+**Commit Strategy (minimal unit, English)**
+Split hotfixes into the following commit units:
+1. `fix({service}): {bug fix description}` - Code fix
+2. `test({service}): add regression test for {bug}` - Reproduction test
 
-각 커밋은 빌드가 통과해야 합니다.
+Each commit must pass the build.
 
-**PR 생성**
-- 브랜치: `hotfix/{service-name}/{bug-description}`
-- PR 본문: 원인, 수정 내용, 재현 테스트, 영향 범위 포함
+**PR Creation**
+- Branch: `hotfix/{service-name}/{bug-description}`
+- PR body: Include cause, fix details, reproduction test, and impact scope
 
-### 6. 변경사항 요약
-글로벌 CLAUDE.md 템플릿에 따라 요약 작성
+### 6. Change Summary
+Write summary according to the global CLAUDE.md template

@@ -1,19 +1,19 @@
 ---
 name: write-test
-description: 단위 테스트, 통합 테스트, 성능 테스트를 작성합니다. Kotest + MockK + Testcontainers 패턴을 따릅니다.
+description: Writes unit tests, integration tests, and performance tests. Follows Kotest + MockK + Testcontainers patterns.
 argument-hint: [test-type unit|integration|performance] [target-class-or-feature]
 ---
 
-$ARGUMENTS 테스트를 작성하세요.
+$ARGUMENTS Write tests.
 
-## 테스트 유형별 가이드
+## Guide by Test Type
 
-### unit (단위 테스트)
-- **프레임워크**: Kotest BehaviorSpec (Given/When/Then)
-- **모킹**: MockK
-- **위치**: `src/test/kotlin/` (소스와 동일 패키지)
-- **대상**: UseCase, Domain 로직
-- **규칙**: 외부 의존성 모두 모킹, 빠르게 실행
+### unit (Unit Test)
+- **Framework**: Kotest BehaviorSpec (Given/When/Then)
+- **Mocking**: MockK
+- **Location**: `src/test/kotlin/` (same package as source)
+- **Target**: UseCase, Domain logic
+- **Rules**: Mock all external dependencies, execute quickly
 
 ```kotlin
 class PlaceOrderUseCaseTest : BehaviorSpec({
@@ -21,13 +21,13 @@ class PlaceOrderUseCaseTest : BehaviorSpec({
     val orderPort = mockk<OrderPort>()
     val sut = PlaceOrderUseCase(stockPort, orderPort)
 
-    Given("재고가 충분할 때") {
+    Given("when stock is sufficient") {
         coEvery { stockPort.verify(any()) } returns StockResult.Available(100)
 
-        When("주문을 요청하면") {
+        When("an order is requested") {
             val result = sut.execute(command)
 
-            Then("주문이 성공한다") {
+            Then("the order succeeds") {
                 result shouldBe OrderResult.Success
             }
         }
@@ -35,39 +35,39 @@ class PlaceOrderUseCaseTest : BehaviorSpec({
 })
 ```
 
-### integration (통합 테스트)
-- **프레임워크**: Kotest + Spring Boot Test
-- **인프라**: Testcontainers (Redis, Kafka, PostgreSQL)
-- **위치**: `src/test/kotlin/.../integration/`
-- **대상**: Adapter, 전체 흐름
-- **규칙**: 실제 인프라 사용, 격리된 환경
+### integration (Integration Test)
+- **Framework**: Kotest + Spring Boot Test
+- **Infrastructure**: Testcontainers (Redis, Kafka, PostgreSQL)
+- **Location**: `src/test/kotlin/.../integration/`
+- **Target**: Adapter, end-to-end flows
+- **Rules**: Use real infrastructure, isolated environment
 
 ```kotlin
 @SpringBootTest
 class OrderIntegrationTest : BehaviorSpec({
-    // Testcontainers로 Redis, Kafka 자동 시작
-    Given("상품 재고가 100개일 때") {
-        // Redis에 재고 설정
-        When("동시에 50명이 주문하면") {
-            // 코루틴으로 동시 요청
-            Then("50개가 정확히 차감된다") {
-                // 원자성 검증
+    // Automatically start Redis, Kafka with Testcontainers
+    Given("when product stock is 100") {
+        // Set stock in Redis
+        When("50 users order simultaneously") {
+            // Concurrent requests with coroutines
+            Then("exactly 50 are decremented") {
+                // Verify atomicity
             }
         }
     }
 })
 ```
 
-### performance (성능/동시성 테스트)
-- **위치**: `tests/performance/`
-- **대상**: 동시성 시나리오, 부하 테스트
-- **규칙**: 지표 측정 및 기록
+### performance (Performance/Concurrency Test)
+- **Location**: `tests/performance/`
+- **Target**: Concurrency scenarios, load tests
+- **Rules**: Measure and record metrics
 
-## 필수 사항
-- 테스트 작성 후 반드시 실행: `./gradlew test` 또는 특정 테스트
-- 실패 시 원인 분석 후 수정
-- 엣지 케이스 반드시 포함:
-  - null, 빈 값, 경계값
-  - 동시성 (여러 코루틴 동시 실행)
-  - 타임아웃
-  - 네트워크 실패
+## Required
+- After writing tests, must run: `./gradlew test` or specific tests
+- Analyze cause and fix on failure
+- Must include edge cases:
+  - null, empty values, boundary values
+  - Concurrency (multiple coroutines running simultaneously)
+  - Timeout
+  - Network failure

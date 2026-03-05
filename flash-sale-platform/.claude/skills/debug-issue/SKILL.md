@@ -1,51 +1,51 @@
 ---
 name: debug-issue
-description: 체계적 디버깅 워크플로우를 수행합니다. 에러 로그 분석, 재현, 근본 원인 분석, 수정, 검증까지 진행합니다.
+description: Performs a systematic debugging workflow. Proceeds through error log analysis, reproduction, root cause analysis, fix, and verification.
 argument-hint: [error-description-or-log]
 ---
 
-$ARGUMENTS 이슈를 디버깅하세요.
+$ARGUMENTS Debug the issue.
 
-## 디버깅 프로세스
+## Debugging Process
 
-### 1. 증상 파악
-- 에러 메시지 전문 확인
-- 스택 트레이스 분석
-- 재현 조건 정리 (언제, 어떤 요청, 어떤 상황)
-- 영향 범위 파악
+### 1. Identify Symptoms
+- Review the full error message
+- Analyze the stack trace
+- Document reproduction conditions (when, which request, what situation)
+- Determine impact scope
 
-### 2. 범위 좁히기
-- 관련 서비스 식별
-- 관련 클래스/메서드 식별
-- 최근 변경사항 확인 (`git log`, `git diff`)
-- 로그 확인
+### 2. Narrow Down Scope
+- Identify related services
+- Identify related classes/methods
+- Check recent changes (`git log`, `git diff`)
+- Review logs
 
-### 3. 가설 수립
-가능한 원인을 최소 3가지 나열:
-1. 가설 A: ...
-2. 가설 B: ...
-3. 가설 C: ...
+### 3. Formulate Hypotheses
+List at least 3 possible causes:
+1. Hypothesis A: ...
+2. Hypothesis B: ...
+3. Hypothesis C: ...
 
-### 4. 가설 검증
-- 로그 추가로 데이터 확인
-- 재현 테스트 작성
-- 디버그 포인트 설정
+### 4. Verify Hypotheses
+- Add logging to check data
+- Write reproduction tests
+- Set debug points
 
-### 5. 근본 원인 확인
-- 증상이 아닌 원인 식별
-- "왜?"를 5번 반복 (5 Whys)
-- 원인 연쇄 관계 정리
+### 5. Confirm Root Cause
+- Identify the cause, not the symptom
+- Repeat "Why?" 5 times (5 Whys)
+- Map out the causal chain
 
-### 6. 수정
-- 최소 변경으로 수정
-- 사이드 이펙트 확인
-- 관련 코드 다른 곳에 같은 문제가 없는지 확인
+### 6. Fix
+- Fix with minimal changes
+- Check for side effects
+- Verify the same issue doesn't exist elsewhere in related code
 
-### 7. 검증
-- 기존 테스트 전체 통과 확인: `./gradlew test`
-- 재현 테스트가 이제 통과하는지 확인
-- 엣지 케이스 추가 테스트
+### 7. Verification
+- Confirm all existing tests pass: `./gradlew test`
+- Confirm the reproduction test now passes
+- Add edge case tests
 
-### 8. 문서화
-- 원인과 해결책 간단히 기록
-- 재발 방지를 위한 조치 제안
+### 8. Documentation
+- Briefly record the cause and solution
+- Suggest measures to prevent recurrence

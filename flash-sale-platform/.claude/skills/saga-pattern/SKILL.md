@@ -1,15 +1,15 @@
 ---
 name: saga-pattern
-description: 분산 트랜잭션을 위한 Saga 패턴을 구현합니다. Orchestration 방식으로 코루틴 상태머신을 사용합니다.
+description: Implements the Saga pattern for distributed transactions. Uses a coroutine state machine with the Orchestration approach.
 argument-hint: [saga-name] [steps-description]
 ---
 
-$ARGUMENTS Saga를 구현하세요.
+$ARGUMENTS Implement the Saga.
 
-## 구현 단계
+## Implementation Steps
 
-### 1. Saga 단계 정의
-각 단계(Step)의 실행 액션과 보상 액션을 정의합니다.
+### 1. Define Saga Steps
+Define the execution action and compensation action for each step.
 
 ```kotlin
 sealed class OrderSagaStep {
@@ -20,7 +20,7 @@ sealed class OrderSagaStep {
 }
 ```
 
-### 2. Saga 상태 정의
+### 2. Define Saga State
 ```kotlin
 sealed class SagaState {
     object Started : SagaState()
@@ -34,34 +34,34 @@ sealed class SagaState {
 }
 ```
 
-### 3. Orchestrator 구현
-- 코루틴 기반 상태 머신
-- 각 단계를 순차 실행
-- 실패 시 역순 보상 실행
-- 상태 변경마다 Kafka 이벤트 발행
+### 3. Implement Orchestrator
+- Coroutine-based state machine
+- Execute each step sequentially
+- Execute compensations in reverse order on failure
+- Publish Kafka event on each state change
 
-### 4. 보상 트랜잭션
+### 4. Compensating Transactions
 ```
-정상 흐름:  재고확인 → 재고차감 → 결제요청 → 주문확정
-실패 시:    (결제실패!) → 재고복구 → 주문취소
-            ← ← ← 보상 트랜잭션 ← ← ←
+Normal flow:    Verify Stock → Decrement Stock → Request Payment → Confirm Order
+On failure:     (Payment failed!) → Restore Stock → Cancel Order
+                ← ← ← Compensating transactions ← ← ←
 ```
 
-### 5. DLQ 처리
-- 보상도 실패한 경우 DLQ로 격리
-- 수동 처리 대시보드 또는 알림 연동
+### 5. DLQ Handling
+- Isolate to DLQ when compensation also fails
+- Connect to manual processing dashboard or alerting
 
-### 6. 멱등성
-- 각 단계에 멱등성 키(Redis) 저장
-- 동일 키로 재실행 시 중복 방지
+### 6. Idempotency
+- Store idempotency key (Redis) for each step
+- Prevent duplicates when re-executed with the same key
 
-## 코드 위치
+## Code Location
 - `{service}/src/main/kotlin/.../application/saga/`
-  - `{SagaName}Definition.kt`: Saga 단계 및 상태 정의
-  - `{SagaName}Orchestrator.kt`: 실행 엔진
-  - `{SagaName}StepHandler.kt`: 각 단계 핸들러
+  - `{SagaName}Definition.kt`: Saga step and state definitions
+  - `{SagaName}Orchestrator.kt`: Execution engine
+  - `{SagaName}StepHandler.kt`: Handler for each step
 
-## 필수 테스트
-- 정상 흐름 통합 테스트
-- 각 단계 실패 시 보상 흐름 테스트
-- 멱등성 테스트 (동일 요청 2회 실행)
+## Required Tests
+- Integration test for the normal flow
+- Compensation flow test for each step failure
+- Idempotency test (execute the same request twice)

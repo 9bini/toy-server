@@ -1,75 +1,75 @@
 ---
 name: full-feature
-description: 기능을 설계부터 PR까지 원스톱으로 구현합니다. 설계 → 구현 → 테스트 → 리뷰 → PR 생성의 전체 파이프라인을 실행합니다.
+description: Implements a feature end-to-end from design to PR. Executes the full pipeline of design → implementation → testing → review → PR creation.
 argument-hint: [service-name] [feature-description]
 ---
 
-$ARGUMENTS 기능을 전체 파이프라인으로 구현하세요.
+$ARGUMENTS Implement the feature through the full pipeline.
 
-## 전체 파이프라인 (6단계)
+## Full Pipeline (6 Stages)
 
-### 1단계: 설계 확인
-- 도메인 모델 설계 (Entity, Value Object, Error)
-- UseCase 정의 (Input/Output Port)
-- Adapter 식별 (Redis/Kafka/DB 중 필요한 것)
-- API 스펙 (요청/응답 DTO, HTTP 메서드, 경로)
-- Kafka 이벤트 설계 (필요한 경우)
-- Redis 키/연산 설계 (필요한 경우)
-- 최신 Spring Boot/Kotlin 기능 중 활용 가능한 것이 있는지 확인
-- 사용자에게 설계 확인 요청 후 진행
+### Stage 1: Design Review
+- Domain model design (Entity, Value Object, Error)
+- UseCase definition (Input/Output Port)
+- Adapter identification (which of Redis/Kafka/DB are needed)
+- API spec (request/response DTO, HTTP method, path)
+- Kafka event design (if needed)
+- Redis key/operation design (if needed)
+- Check if any latest Spring Boot/Kotlin features can be leveraged
+- Request design confirmation from the user before proceeding
 
-### 2단계: 구현 (구현 순서 엄수)
-아래 순서를 반드시 따릅니다:
-1. **Domain**: Entity, Value Object, sealed interface Error (KDoc 포함)
-2. **Port Out**: Output Port 인터페이스 (기술 세부사항 노출 금지)
-3. **Port In**: UseCase 인터페이스
-4. **UseCase Implementation**: 비즈니스 로직 (suspend fun, withTimeout)
-5. **Adapter Out**: Redis/Kafka/DB 구현체 (클래스명에 기술 스택 포함)
+### Stage 2: Implementation (follow implementation order strictly)
+Follow the order below strictly:
+1. **Domain**: Entity, Value Object, sealed interface Error (including KDoc)
+2. **Port Out**: Output Port interface (no tech details exposed)
+3. **Port In**: UseCase interface
+4. **UseCase Implementation**: Business logic (suspend fun, withTimeout)
+5. **Adapter Out**: Redis/Kafka/DB implementation (class names include tech stack)
 6. **Adapter In**: Controller (suspend fun, WebFlux)
-7. **Config**: Spring 빈 등록
+7. **Config**: Spring bean registration
 
-### 3단계: 테스트 작성 + 실행
-- UseCase 단위 테스트 (Kotest BehaviorSpec + MockK)
-  - 정상 케이스, 에러 케이스, 엣지 케이스
-  - coEvery/coVerify 사용
-- Controller 테스트 (WebTestClient, 필요시)
-- 통합 테스트 (Testcontainers, Redis/Kafka 사용 시)
-- 모든 테스트 실행: `./gradlew :services:{service}:test`
-- 실패 시 즉시 수정 후 재실행
+### Stage 3: Write Tests + Execute
+- UseCase unit tests (Kotest BehaviorSpec + MockK)
+  - Normal cases, error cases, edge cases
+  - Use coEvery/coVerify
+- Controller tests (WebTestClient, if needed)
+- Integration tests (Testcontainers, when using Redis/Kafka)
+- Run all tests: `./gradlew :services:{service}:test`
+- Fix immediately on failure and re-run
 
-### 4단계: 품질 검증
+### Stage 4: Quality Verification
 ```bash
 ./gradlew :services:{service}:ktlintFormat
 ./gradlew :services:{service}:build
 ```
-- 빌드 실패 시 즉시 수정
+- Fix immediately on build failure
 
-### 5단계: 변경사항 요약
-글로벌 CLAUDE.md의 변경사항 요약 템플릿에 따라 작성:
-- 무엇을 했는가 (1줄)
-- 왜 이렇게 했는가 (핵심 결정)
-- 변경된 파일 테이블
-- 핵심 코드 흐름
-- 주의사항
+### Stage 5: Change Summary
+Write according to the change summary template in the global CLAUDE.md:
+- What was done (1 line)
+- Why it was done this way (key decisions)
+- Changed files table
+- Core code flow
+- Notes/caveats
 
-### 6단계: 커밋 & PR 생성
+### Stage 6: Commit & PR Creation
 
-**커밋 전략 (최소 기능 단위, 한국어)**
-아래 단위로 분리하여 커밋합니다. 각 커밋은 빌드가 통과해야 합니다:
-1. `feat({service}): 도메인 모델 정의` - Entity, VO, sealed interface Error
-2. `feat({service}): 포트 및 유스케이스 구현` - Port In/Out + UseCase
-3. `feat({service}): 어댑터 구현` - Redis/Kafka/DB Adapter
-4. `feat({service}): API 엔드포인트 및 설정 추가` - Controller + Config
-5. `test({service}): 단위 및 통합 테스트 추가` - 테스트 코드
+**Commit Strategy (minimal functional unit, English)**
+Split into the following units for commits. Each commit must pass the build:
+1. `feat({service}): define domain models` - Entity, VO, sealed interface Error
+2. `feat({service}): implement ports and use cases` - Port In/Out + UseCase
+3. `feat({service}): implement adapters` - Redis/Kafka/DB Adapter
+4. `feat({service}): add API endpoints and configuration` - Controller + Config
+5. `test({service}): add unit and integration tests` - Test code
 
-커밋 메시지에 본문으로 핵심 변경 이유를 포함합니다.
+Include the key reason for the change in the commit message body.
 
-**PR 생성**
-- 브랜치: `feature/{service-name}/{feature-description}`
-- PR 제목: 70자 이내 한국어
-- PR 본문: 설계 결정, 변경 파일, 테스트 결과
+**PR Creation**
+- Branch: `feature/{service-name}/{feature-description}`
+- PR title: Under 70 characters, in English
+- PR body: Design decisions, changed files, test results
 
-## 중단 조건
-- 빌드 실패 → 즉시 수정
-- 테스트 실패 → 즉시 수정
-- ktlint 위반 → 자동 포맷
+## Abort Conditions
+- Build failure → fix immediately
+- Test failure → fix immediately
+- ktlint violation → auto-format

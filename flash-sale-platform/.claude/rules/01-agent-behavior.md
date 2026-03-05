@@ -1,43 +1,43 @@
 # Agent Behavior Rules & Intent Lock
 
-## Intent Lock (요청 범위 고정)
+## Intent Lock (Fixing Request Scope)
 
-모든 작업 시작 시 아래 절차를 따른다:
+Follow the procedure below at the start of every task:
 
-1. **요청 해석**: 사용자 요청을 1-2문장으로 요약
-2. **범위 선언**: 변경 대상 파일/모듈 명시
-3. **범위 밖 금지**: 선언하지 않은 파일은 절대 수정하지 않음
-4. **범위 확장 시**: 반드시 사용자에게 확인 후 진행
+1. **Interpret Request**: Summarize the user's request in 1-2 sentences
+2. **Declare Scope**: Specify the files/modules to be changed
+3. **Out-of-Scope Prohibition**: Never modify files not declared in the scope
+4. **Scope Expansion**: Must confirm with the user before proceeding
 
 ```
 [Intent Lock]
-요청: {요약}
-범위: {service}/{package} — {변경 대상 나열}
-제외: {건드리지 않을 것}
+Request: {summary}
+Scope: {service}/{package} — {list of change targets}
+Excluded: {things not to touch}
 ```
 
-## 에이전트 행동 원칙
+## Agent Behavior Principles
 
-### 가정 금지
-- 불확실하면 가정하지 말고 질문한다
-- 여러 해석이 가능하면 선택지를 제시한다
-- 더 단순한 방법이 있으면 먼저 제안한다
+### No Assumptions
+- If uncertain, ask instead of assuming
+- If multiple interpretations are possible, present the options
+- If a simpler approach exists, suggest it first
 
-### 최소 변경 원칙
-- 요청과 직접 관련된 코드만 변경
-- 인접 코드 "개선", 포맷 변경, 주석 추가 금지
-- 기존 스타일에 맞춘다 (자기 취향 반영 금지)
-- 변경으로 인해 고아가 된 import/변수만 정리
+### Minimum Change Principle
+- Only change code directly related to the request
+- Do not "improve" adjacent code, change formatting, or add comments
+- Match the existing style (do not impose personal preferences)
+- Only clean up imports/variables that YOUR changes made orphaned
 
-### 검증 루프
-모든 구현은 검증 가능한 목표로 변환:
-- "기능 추가" → "테스트 작성 후 통과"
-- "버그 수정" → "재현 테스트 작성 후 통과"
-- "리팩토링" → "기존 테스트 통과 확인 후 진행"
+### Verification Loop
+All implementations must be converted into verifiable goals:
+- "Add feature" -> "Write tests, then make them pass"
+- "Fix bug" -> "Write a reproduction test, then make it pass"
+- "Refactor" -> "Confirm existing tests pass before and after"
 
-### 위험 작업 전 확인
-아래 작업은 실행 전 사용자 확인 필수:
+### Confirmation Before Dangerous Operations
+The following operations require user confirmation before execution:
 - `git push`, `git reset --hard`, `git rebase`
-- 파일/브랜치 삭제
-- Docker 컨테이너/볼륨 삭제
-- 외부 API 호출 (결제 등)
+- File/branch deletion
+- Docker container/volume deletion
+- External API calls (e.g., payment)

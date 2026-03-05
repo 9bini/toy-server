@@ -2,43 +2,43 @@
 
 ## WebFlux + Coroutines
 
-### Controller 규칙
-- 모든 핸들러는 `suspend fun` — blocking 코드 절대 금지
-- 요청/응답 DTO는 Controller 레벨에서 정의 (domain 객체 직접 노출 금지)
-- 검증은 Bean Validation 활용 (`@Valid`, `@field:NotBlank` 등)
+### Controller Rules
+- All handlers must be `suspend fun` — blocking code is strictly prohibited
+- Request/response DTOs are defined at the Controller level (never expose domain objects directly)
+- Use Bean Validation for validation (`@Valid`, `@field:NotBlank`, etc.)
 
-### 응답 형식
+### Response Format
 ```kotlin
-// 성공
+// Success
 data class ApiResponse<T>(
     val success: Boolean = true,
     val data: T
 )
 
-// 에러
+// Error
 data class ErrorResponse(
     val success: Boolean = false,
     val error: ErrorDetail
 )
 data class ErrorDetail(
     val code: String,      // "ORDER_INSUFFICIENT_STOCK"
-    val message: String    // 사용자용 메시지
+    val message: String    // User-facing message
 )
 ```
 
-### HTTP Status 매핑
-| 상황 | Status | 예시 |
-|------|--------|------|
-| 정상 | 200 OK | 조회 성공 |
-| 생성 | 201 Created | 주문 생성 |
-| 입력 오류 | 400 Bad Request | 유효성 검증 실패 |
-| 인증 실패 | 401 Unauthorized | 토큰 만료 |
-| 권한 없음 | 403 Forbidden | 다른 사용자 주문 조회 |
-| 리소스 없음 | 404 Not Found | 존재하지 않는 상품 |
-| 비즈니스 규칙 위반 | 409 Conflict | 재고 부족, 중복 주문 |
-| 요청 과다 | 429 Too Many Requests | Rate Limit 초과 |
+### HTTP Status Mapping
+| Situation | Status | Example |
+|-----------|--------|---------|
+| Success | 200 OK | Query successful |
+| Created | 201 Created | Order created |
+| Input error | 400 Bad Request | Validation failure |
+| Authentication failure | 401 Unauthorized | Token expired |
+| Insufficient permissions | 403 Forbidden | Accessing another user's order |
+| Resource not found | 404 Not Found | Non-existent product |
+| Business rule violation | 409 Conflict | Insufficient stock, duplicate order |
+| Too many requests | 429 Too Many Requests | Rate Limit exceeded |
 
 ### SSE (Server-Sent Events)
-- 대기열 상태 알림은 SSE 사용
-- 연결 타임아웃, 재연결 로직 필수
-- Nginx SSE 프록시 설정과 정합성 확인
+- Use SSE for queue status notifications
+- Connection timeout and reconnection logic are required
+- Verify consistency with Nginx SSE proxy configuration

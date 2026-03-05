@@ -1,6 +1,6 @@
 # Hexagonal Architecture Rules
 
-## 패키지 구조 (각 서비스)
+## Package Structure (per service)
 
 ```
 com.flashsale.{service-name}/
@@ -14,35 +14,35 @@ com.flashsale.{service-name}/
 └── config/            # Spring configuration
 ```
 
-## 의존성 방향
+## Dependency Direction
 
 ```
 adapter/in → application/port/in → domain
 adapter/out → application/port/out → domain
 ```
 
-- **domain**: 외부 의존성 없음 (순수 Kotlin)
-- **port**: 인터페이스만 (기술 세부사항 노출 금지)
-- **adapter**: 구현체 (클래스명에 기술 스택 포함)
+- **domain**: No external dependencies (pure Kotlin)
+- **port**: Interfaces only (no technology details exposed)
+- **adapter**: Implementations (class names include tech stack)
 
-## 구현 순서 (신규 기능)
+## Implementation Order (new features)
 
-반드시 아래 순서를 따른다:
+Always follow the order below:
 1. **Domain** — Entity, VO, sealed interface Error
-2. **Port Out** — Output Port 인터페이스
-3. **Port In** — UseCase 인터페이스
-4. **UseCase** — 비즈니스 로직 (suspend fun, withTimeout)
-5. **Adapter Out** — Redis/Kafka/DB 구현체
+2. **Port Out** — Output Port interfaces
+3. **Port In** — UseCase interfaces
+4. **UseCase** — Business logic (suspend fun, withTimeout)
+5. **Adapter Out** — Redis/Kafka/DB implementations
 6. **Adapter In** — Controller (suspend fun, WebFlux)
-7. **Config** — Spring 빈 등록
-8. **Test** — 단위 → 통합 순서
+7. **Config** — Spring bean registration
+8. **Test** — Unit tests first, then integration tests
 
-## 네이밍 규칙
+## Naming Rules
 
-| 계층 | 패턴 | 예시 |
-|------|------|------|
-| Port In | `{동사}{명사}UseCase` | `PlaceOrderUseCase` |
-| Port Out | `{명사}{동사}Port` | `StockDecrementPort` |
-| Adapter | `{기술}{명사}Adapter` | `RedisStockAdapter` |
-| Controller | `{명사}Controller` | `OrderController` |
-| Error | `sealed interface {명사}Error` | `OrderError` |
+| Layer | Pattern | Example |
+|-------|---------|---------|
+| Port In | `{Verb}{Noun}UseCase` | `PlaceOrderUseCase` |
+| Port Out | `{Noun}{Verb}Port` | `StockDecrementPort` |
+| Adapter | `{Tech}{Noun}Adapter` | `RedisStockAdapter` |
+| Controller | `{Noun}Controller` | `OrderController` |
+| Error | `sealed interface {Noun}Error` | `OrderError` |
