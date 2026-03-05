@@ -1,79 +1,79 @@
-# Rubric Scoring (5차원 품질 채점)
+# Rubric Scoring (5-Dimension Quality Scoring)
 
-코드 리뷰 시 아래 5개 차원으로 품질을 채점한다.
-각 차원은 1~5점, 총점 25점 만점.
+Score quality across the following 5 dimensions during code review.
+Each dimension is scored 1-5, with a maximum total of 25 points.
 
-## D1: 정확성 (Correctness)
+## D1: Correctness
 
-| 점수 | 기준 |
-|------|------|
-| 5 | 모든 요구사항 충족, 엣지 케이스 처리, 테스트 전부 통과 |
-| 4 | 핵심 요구사항 충족, 일부 엣지 케이스 미처리 |
-| 3 | 핵심 동작은 하지만 누락된 케이스 있음 |
-| 2 | 일부 시나리오에서 오동작 |
-| 1 | 핵심 요구사항 미충족 또는 빌드 실패 |
+| Score | Criteria |
+|-------|----------|
+| 5 | All requirements met, edge cases handled, all tests passing |
+| 4 | Core requirements met, some edge cases not handled |
+| 3 | Core behavior works but some cases are missing |
+| 2 | Malfunctions in some scenarios |
+| 1 | Core requirements not met or build failure |
 
-## D2: 아키텍처 준수 (Architecture Compliance)
+## D2: Architecture Compliance
 
-| 점수 | 기준 |
-|------|------|
-| 5 | Hexagonal 구조 완벽 준수, 의존성 방향 정확, 네이밍 규칙 준수 |
-| 4 | 구조 준수하지만 사소한 네이밍/패키지 위치 이슈 |
-| 3 | 구조는 따르지만 Port/Adapter 역할 혼재 |
-| 2 | 레이어 간 의존성 역전 존재 |
-| 1 | 아키텍처 무시 (Controller에서 직접 DB 접근 등) |
+| Score | Criteria |
+|-------|----------|
+| 5 | Perfect adherence to Hexagonal structure, correct dependency direction, naming rules followed |
+| 4 | Structure followed but minor naming/package location issues |
+| 3 | Structure is followed but Port/Adapter roles are mixed |
+| 2 | Dependency inversion between layers exists |
+| 1 | Architecture ignored (e.g., Controller directly accessing DB) |
 
-## D3: 동시성 안전성 (Concurrency Safety)
+## D3: Concurrency Safety
 
-| 점수 | 기준 |
-|------|------|
-| 5 | 모든 공유 상태 atomic 처리, withTimeout 적용, structured concurrency |
-| 4 | 핵심 경로는 안전하지만 비핵심 경로 미흡 |
-| 3 | 대부분 안전하지만 Race Condition 가능성 1건 이상 |
-| 2 | blocking 호출 존재 또는 GlobalScope 사용 |
-| 1 | 동시성 미고려 (Redis 연산 비원자적, 타임아웃 없음) |
+| Score | Criteria |
+|-------|----------|
+| 5 | All shared state handled atomically, withTimeout applied, structured concurrency |
+| 4 | Critical paths are safe but non-critical paths are lacking |
+| 3 | Mostly safe but 1 or more potential Race Conditions |
+| 2 | Blocking calls exist or GlobalScope used |
+| 1 | Concurrency not considered (non-atomic Redis operations, no timeouts) |
 
-## D4: 가독성 (Readability)
+## D4: Readability
 
-| 점수 | 기준 |
-|------|------|
-| 5 | 처음 보는 개발자가 5분 내 이해, 의도가 명확한 네이밍 |
-| 4 | 10분 내 이해, 일부 주석 보완 필요 |
-| 3 | 이해 가능하지만 복잡한 부분에 설명 부족 |
-| 2 | 함수 과도하게 길거나 중첩 깊음 |
-| 1 | 이해 불가 — 매직 넘버, 모호한 변수명 다수 |
+| Score | Criteria |
+|-------|----------|
+| 5 | A new developer can understand within 5 minutes, naming clearly expresses intent |
+| 4 | Understandable within 10 minutes, some comments needed |
+| 3 | Understandable but complex parts lack explanation |
+| 2 | Functions excessively long or deeply nested |
+| 1 | Incomprehensible — many magic numbers, ambiguous variable names |
 
-## D5: 테스트 커버리지 (Test Coverage)
+## D5: Test Coverage
 
-| 점수 | 기준 |
-|------|------|
-| 5 | 단위+통합 테스트 완비, 정상/에러/엣지 케이스 모두 커버 |
-| 4 | 핵심 로직 테스트 완비, 엣지 케이스 일부 미흡 |
-| 3 | 정상 케이스 테스트만 존재 |
-| 2 | 테스트 존재하지만 검증이 부실 (assert 부족) |
-| 1 | 테스트 없음 또는 테스트 실패 |
+| Score | Criteria |
+|-------|----------|
+| 5 | Unit + integration tests complete, all normal/error/edge cases covered |
+| 4 | Core logic tests complete, some edge cases lacking |
+| 3 | Only happy path tests exist |
+| 2 | Tests exist but verification is insufficient (lacking assertions) |
+| 1 | No tests or tests failing |
 
-## 채점 출력 형식
+## Scoring Output Format
 
 ```
 ## Rubric Score
 
-| 차원 | 점수 | 근거 |
-|------|------|------|
-| D1 정확성 | ?/5 | {구체적 근거} |
-| D2 아키텍처 | ?/5 | {구체적 근거} |
-| D3 동시성 | ?/5 | {구체적 근거} |
-| D4 가독성 | ?/5 | {구체적 근거} |
-| D5 테스트 | ?/5 | {구체적 근거} |
-| **총점** | **?/25** | |
+| Dimension | Score | Rationale |
+|-----------|-------|-----------|
+| D1 Correctness | ?/5 | {specific rationale} |
+| D2 Architecture | ?/5 | {specific rationale} |
+| D3 Concurrency | ?/5 | {specific rationale} |
+| D4 Readability | ?/5 | {specific rationale} |
+| D5 Test Coverage | ?/5 | {specific rationale} |
+| **Total** | **?/25** | |
 
-### 개선 제안 (가장 낮은 점수 차원 중심)
+### Improvement Suggestions (focused on lowest scoring dimensions)
 1. ...
 2. ...
 ```
 
-## 합격 기준
-- 총점 20점 이상: 합격
-- 총점 15~19점: 조건부 합격 (개선 제안 반영 권장)
-- 총점 14점 이하: 재작업 필요
-- CRITICAL 보안 이슈 존재 시: 점수와 무관하게 재작업
+## Passing Criteria
+- Total 20 points or above: Pass
+- Total 15-19 points: Conditional pass (applying improvement suggestions recommended)
+- Total 14 points or below: Rework required
+- If CRITICAL security issues exist: Rework required regardless of score

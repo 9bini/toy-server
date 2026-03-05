@@ -1,43 +1,43 @@
-# Flash Sale Platform (실시간 선착순 한정판매 시스템)
+# Flash Sale Platform (Real-time First-Come-First-Served Limited Sale System)
 
-## 프로젝트 개요
-10만 동시 접속, 1,000개 한정 상품 선착순 구매 시스템.
-Kotlin + Spring WebFlux + Coroutines 기반 마이크로서비스 아키텍처.
+## Project Overview
+100K concurrent connections, 1,000 limited items first-come-first-served purchase system.
+Kotlin + Spring WebFlux + Coroutines based microservice architecture.
 
-## 아키텍처
+## Architecture
 - **gateway**: API Gateway + Rate Limiting (Redis Token Bucket)
-- **queue-service**: 대기열 관리 (Redis Sorted Set + SSE)
-- **order-service**: 주문 처리 (Redis Lua Script + Redisson 분산 락)
-- **payment-service**: 결제 + Saga 패턴 보상 트랜잭션
-- **notification-service**: 알림 (SSE + Push + 외부 API)
-- **common/domain**: 공유 도메인 모델
-- **common/infrastructure**: 공유 인프라 (Redis, Kafka 설정)
-- **infra/nginx**: Nginx L7 리버스 프록시 (Rate Limiting, 로드밸런싱, SSE 프록시)
+- **queue-service**: Queue management (Redis Sorted Set + SSE)
+- **order-service**: Order processing (Redis Lua Script + Redisson distributed lock)
+- **payment-service**: Payment + Saga pattern compensating transactions
+- **notification-service**: Notifications (SSE + Push + External API)
+- **common/domain**: Shared domain models
+- **common/infrastructure**: Shared infrastructure (Redis, Kafka config)
+- **infra/nginx**: Nginx L7 reverse proxy (Rate Limiting, load balancing, SSE proxy)
 
-## 빌드 & 실행
-- 전체 빌드: `./gradlew build`
-- 특정 서비스: `./gradlew :services:order-service:build`
-- 전체 테스트: `./gradlew test`
-- 특정 테스트: `./gradlew :services:order-service:test --tests "*.OrderServiceTest"`
-- 인프라 실행 (개발): `docker compose up -d`
-- 인프라 실행 (HA 모드): `docker compose -f docker-compose.yml -f docker-compose.ha.yml up -d`
-- 인프라 종료: `docker compose down`
-- 린트 체크: `./gradlew ktlintCheck`
-- 린트 포맷: `./gradlew ktlintFormat`
+## Build & Run
+- Full build: `./gradlew build`
+- Specific service: `./gradlew :services:order-service:build`
+- Full test: `./gradlew test`
+- Specific test: `./gradlew :services:order-service:test --tests "*.OrderServiceTest"`
+- Start infra (dev): `docker compose up -d`
+- Start infra (HA mode): `docker compose -f docker-compose.yml -f docker-compose.ha.yml up -d`
+- Stop infra: `docker compose down`
+- Lint check: `./gradlew ktlintCheck`
+- Lint format: `./gradlew ktlintFormat`
 
-## 코드 컨벤션
-- Kotlin 코드 스타일: ktlint (공식 Kotlin 스타일 가이드)
-- 모든 I/O 함수는 `suspend fun` 사용, blocking 코드 금지
-- `coroutineScope` / `supervisorScope` 적절히 사용
-- Redis 연산은 반드시 Lua Script 또는 Redisson으로 원자성 보장
-- Kafka 메시지는 반드시 멱등성 처리
-- 모든 외부 통신은 `withTimeout` 설정 필수
-- 외부 호출(결제 API, DB 등)에는 withTimeout + 재시도 설정
-- sealed class / sealed interface로 에러 타입 정의
-- 문서와 주석은 한국어, 코드(변수명/클래스명/함수명)는 영어
-- 이 프로젝트는 최신 기술 실습 목적 — Spring Boot/Kotlin/라이브러리의 최신 안정 버전 기능 우선 활용
+## Code Conventions
+- Kotlin code style: ktlint (official Kotlin style guide)
+- All I/O functions must use `suspend fun`, no blocking code
+- Use `coroutineScope` / `supervisorScope` appropriately
+- Redis operations must ensure atomicity via Lua Script or Redisson
+- Kafka messages must be processed idempotently
+- All external communication requires `withTimeout`
+- External calls (payment API, DB, etc.) require withTimeout + retry
+- Define error types with sealed class / sealed interface
+- Documentation, comments, and commit messages in English; code (variable/class/function names) in English
+- This project is for practicing modern technology — prefer latest stable features of Spring Boot/Kotlin/libraries
 
-## 패키지 구조 (각 서비스)
+## Package Structure (per service)
 ```
 com.flashsale.{service-name}/
 ├── adapter/
@@ -50,167 +50,167 @@ com.flashsale.{service-name}/
 └── config/            # Spring configuration
 ```
 
-## Git 워크플로우 & 커밋 전략
+## Git Workflow & Commit Strategy
 
-### 커밋 원칙
-- **최소 기능 단위 커밋**: 하나의 커밋은 하나의 논리적 변경만 포함
-- **한국어 커밋 메시지**: conventional commits 형식으로 한국어 작성
-- **각 커밋은 빌드가 통과해야 함** (`./gradlew build` 성공 상태)
-- **커밋 전 반드시 빌드 검증** 후 커밋
+### Commit Principles
+- **Minimal logical unit commits**: Each commit contains only one logical change
+- **English commit messages**: Written in English using conventional commits format
+- **Each commit must pass build** (`./gradlew build` succeeds)
+- **Always verify build before committing**
 
-### 커밋 메시지 형식
+### Commit Message Format
 ```
-{type}({scope}): {한국어 설명}
+{type}({scope}): {English description}
 
-{본문 - 변경 이유와 핵심 내용}
+{body - reason for change and key details}
 
 Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 ```
 
-### 커밋 타입
-| 타입 | 용도 | 예시 |
-|------|------|------|
-| `feat` | 새 기능 추가 | `feat(order): 재고 차감 Lua Script 구현` |
-| `fix` | 버그 수정 | `fix(queue): 대기열 순번 계산 오류 수정` |
-| `refactor` | 동작 변경 없는 구조 개선 | `refactor(payment): Saga 상태머신 분리` |
-| `test` | 테스트 추가/수정 | `test(order): 동시 주문 통합 테스트 추가` |
-| `perf` | 성능 개선 | `perf(gateway): Rate Limiter Lua Script 최적화` |
-| `docs` | 문서 변경 | `docs: API 스펙 문서 업데이트` |
-| `chore` | 빌드/설정 변경 | `chore: Gradle Version Catalog 도입` |
+### Commit Types
+| Type | Purpose | Example |
+|------|---------|---------|
+| `feat` | New feature | `feat(order): implement stock decrement Lua Script` |
+| `fix` | Bug fix | `fix(queue): fix queue ranking calculation error` |
+| `refactor` | Structural improvement without behavior change | `refactor(payment): extract Saga state machine` |
+| `test` | Add/modify tests | `test(order): add concurrent order integration test` |
+| `perf` | Performance improvement | `perf(gateway): optimize Rate Limiter Lua Script` |
+| `docs` | Documentation change | `docs: update API spec documentation` |
+| `chore` | Build/config change | `chore: introduce Gradle Version Catalog` |
 
-### 커밋 분리 기준
-기능 구현 시 아래 단위로 분리:
-1. **도메인 모델** - Entity, VO, Error 정의
-2. **포트 & 유스케이스** - 인터페이스 + 비즈니스 로직
-3. **어댑터** - Redis/Kafka/DB 구현체
-4. **컨트롤러 & 설정** - API 엔드포인트 + Spring 설정
-5. **테스트** - 단위 + 통합 테스트
+### Commit Separation Guidelines
+When implementing features, split into these units:
+1. **Domain model** — Entity, VO, Error definitions
+2. **Ports & Use cases** — Interfaces + business logic
+3. **Adapters** — Redis/Kafka/DB implementations
+4. **Controllers & Config** — API endpoints + Spring config
+5. **Tests** — Unit + integration tests
 
-인프라/빌드 변경 시:
-1. 설정 변경 단위별 분리 (의존성, 환경 설정, 자동화 등)
+For infrastructure/build changes:
+1. Split by individual config change unit (dependencies, environment settings, automation, etc.)
 
-### 브랜치 전략
-| 유형 | 패턴 | 예시 |
-|------|------|------|
-| 기능 | `feature/{service}/{description}` | `feature/order/stock-decrement` |
-| 핫픽스 | `hotfix/{service}/{description}` | `hotfix/queue/ranking-fix` |
-| 리팩토링 | `refactor/{service}/{description}` | `refactor/payment/saga-cleanup` |
-| 인프라 | `chore/{description}` | `chore/gradle-version-catalog` |
+### Branch Strategy
+| Type | Pattern | Example |
+|------|---------|---------|
+| Feature | `feature/{service}/{description}` | `feature/order/stock-decrement` |
+| Hotfix | `hotfix/{service}/{description}` | `hotfix/queue/ranking-fix` |
+| Refactoring | `refactor/{service}/{description}` | `refactor/payment/saga-cleanup` |
+| Infrastructure | `chore/{description}` | `chore/gradle-version-catalog` |
 
 ## IMPORTANT
-- 테스트 작성 후 반드시 실행하여 통과 확인
-- Redis/Kafka 연동 코드는 반드시 통합 테스트 작성 (Testcontainers 사용)
-- 성능에 영향을 주는 변경은 벤치마크 실행 권장
-- docker compose 인프라가 실행 중인지 확인 후 통합 테스트 수행
+- Always run tests after writing them to verify they pass
+- Redis/Kafka integration code must have integration tests (using Testcontainers)
+- Benchmark recommended for performance-impacting changes
+- Verify docker compose infrastructure is running before integration tests
 
 ---
 
-## 코드 가독성 규칙 (이 프로젝트 전용)
+## Code Readability Rules (Project-specific)
 
-### Hexagonal Architecture 가독성
-- Port 인터페이스는 "무엇을 하는가"만 표현 (구현 세부사항 노출 금지)
-- Adapter 클래스명에 기술 스택 포함: `RedisStockAdapter`, `KafkaOrderEventPublisher`
-- UseCase 클래스명은 비즈니스 동작: `PlaceOrderUseCase`, `DecrementStockUseCase`
+### Hexagonal Architecture Readability
+- Port interfaces express only "what it does" (no implementation details)
+- Adapter class names include tech stack: `RedisStockAdapter`, `KafkaOrderEventPublisher`
+- UseCase class names reflect business actions: `PlaceOrderUseCase`, `DecrementStockUseCase`
 
-### 코루틴 가독성
-- `coroutineScope` 사용 시 주석으로 "왜 병렬화하는지" 설명
-- `withTimeout` 값은 상수로 정의하고 이름에 의도 포함:
+### Coroutine Readability
+- When using `coroutineScope`, add a comment explaining "why parallelization"
+- `withTimeout` values defined as constants with intent in the name:
   ```kotlin
   companion object {
-      // Redis 응답은 보통 1-5ms, 100ms 넘으면 문제 상황
+      // Redis response is typically 1-5ms, over 100ms indicates a problem
       private val REDIS_OPERATION_TIMEOUT = 100.milliseconds
-      // 외부 결제 API는 최대 3초까지 허용
+      // External payment API allows up to 3 seconds
       private val PAYMENT_API_TIMEOUT = 3.seconds
   }
   ```
 
-### Redis/Kafka 가독성
-- Redis 키 패턴은 `object RedisKeys`에 상수로 집중 관리:
+### Redis/Kafka Readability
+- Redis key patterns centrally managed as constants in `object RedisKeys`:
   ```kotlin
   object RedisKeys {
       fun stock(productId: String) = "stock:product:$productId"
       fun queue(saleEventId: String) = "queue:sale:$saleEventId"
   }
   ```
-- Kafka 토픽명은 상수 파일에 집중 관리
+- Kafka topic names centrally managed in a constants file
 
-### Sealed Class 에러 정의
-- 각 에러 타입에 KDoc으로 "언제 이 에러가 발생하는지" 설명:
+### Sealed Class Error Definitions
+- Each error type must have KDoc explaining "when this error occurs":
   ```kotlin
   sealed interface OrderError {
-      /** 상품 재고가 요청 수량보다 부족할 때 */
+      /** When product stock is less than requested quantity */
       data class InsufficientStock(val available: Int, val requested: Int) : OrderError
-      /** 결제 게이트웨이 타임아웃 (3초 초과) */
+      /** Payment gateway timeout (exceeds 3 seconds) */
       data class PaymentTimeout(val orderId: String) : OrderError
   }
   ```
 
 ---
 
-## 반복 이슈 기록
+## Recurring Issue Log
 
-> 발견된 반복 이슈를 누적 기록. 새 이슈 발견 시 여기에 추가를 제안한다.
+> Accumulated record of recurring issues. Suggest adding new issues here when discovered.
 
-| 날짜 | 이슈 | 원인 | 해결 패턴 |
-|------|------|------|-----------|
-| 2026-02-25 | 이중화/HA 미고려 | 개발 환경 단일 인스턴스로 설계 | docker-compose.ha.yml 오버레이로 분리, withTimeout + 재시도 패턴 적용 |
-| 2026-02-25 | 트래픽 수신 계층 부재 | Nginx 없이 서비스 직접 노출 | Nginx 리버스 프록시 추가 (Rate Limiting + SSE 프록시 + 로드밸런싱) |
-| 2026-02-25 | hooks 환경 의존성 | session-start.sh 경로 하드코딩, jq 미설치 환경 | 동적 경로 탐색, jq/python3/grep fallback 체인 |
+| Date | Issue | Cause | Resolution Pattern |
+|------|-------|-------|--------------------|
+| 2026-02-25 | HA/redundancy not considered | Designed for single-instance dev environment | Separated into docker-compose.ha.yml overlay, applied withTimeout + retry pattern |
+| 2026-02-25 | Missing traffic ingress layer | Services exposed directly without Nginx | Added Nginx reverse proxy (Rate Limiting + SSE proxy + load balancing) |
+| 2026-02-25 | Hooks environment dependency | Hardcoded paths in session-start.sh, jq not installed | Dynamic path discovery, jq/python3/grep fallback chain |
 
 ---
 
-## 구현 순서 가이드 (신규 기능 구현 시 필수)
-아래 순서를 반드시 따릅니다:
-1. **Domain** - Entity, Value Object, sealed interface Error (외부 의존성 없음)
-2. **Port Out** - Output Port 인터페이스 (기술 세부사항 노출 금지)
-3. **Port In** - UseCase 인터페이스
-4. **UseCase** - 비즈니스 로직 구현 (suspend fun, withTimeout)
-5. **Adapter Out** - Redis/Kafka/DB 구현체 (클래스명에 기술 스택 포함)
-6. **Adapter In** - Controller (suspend fun, WebFlux)
-7. **Config** - Spring 빈 등록
-8. **Test** - 단위 테스트 → 통합 테스트 순서
+## Implementation Order Guide (Required for new features)
+Follow this order strictly:
+1. **Domain** — Entity, Value Object, sealed interface Error (no external dependencies)
+2. **Port Out** — Output Port interfaces (no tech details exposed)
+3. **Port In** — UseCase interfaces
+4. **UseCase** — Business logic implementation (suspend fun, withTimeout)
+5. **Adapter Out** — Redis/Kafka/DB implementations (class names include tech stack)
+6. **Adapter In** — Controller (suspend fun, WebFlux)
+7. **Config** — Spring bean registration
+8. **Test** — Unit tests → Integration tests in order
 
-## 스킬 사용 가이드
-| 작업 | 스킬 | 설명 |
-|------|------|------|
-| 기능 전체 구현 | `/full-feature` | 설계→구현→테스트→PR 원스톱 |
-| 빠른 버그 수정 | `/hotfix` | 분석→수정→테스트→PR |
-| API 엔드포인트 | `/implement-api` | 단일 API 구현 |
-| 테스트 작성 | `/write-test` | 특정 클래스 테스트 |
-| 서비스 설계 | `/design-service` | DDD 기반 설계 |
-| 코드 리뷰 | `/review-code` | 코드 품질 검사 |
-| 디버깅 | `/debug-issue` | 체계적 디버깅 |
-| Redis 설정 | `/redis-setup` | Lua Script, 분산 락, 대기열 |
-| Kafka 설정 | `/kafka-setup` | Producer/Consumer 설정 |
-| Saga 구현 | `/saga-pattern` | 분산 트랜잭션 |
-| 전체 검사 | `/check-all` | 빌드+테스트+린트+아키텍처 |
-| 문서 작성 | `/document` | ADR, API 문서 |
-| 성능 테스트 | `/performance-test` | k6 부하 테스트 작성/실행 |
+## Skills Usage Guide
+| Task | Skill | Description |
+|------|-------|-------------|
+| Full feature implementation | `/full-feature` | One-stop: design → implement → test → PR |
+| Quick bug fix | `/hotfix` | Analysis → fix → test → PR |
+| API endpoint | `/implement-api` | Single API implementation |
+| Write tests | `/write-test` | Test specific classes |
+| Service design | `/design-service` | DDD-based design |
+| Code review | `/review-code` | Code quality inspection |
+| Debugging | `/debug-issue` | Systematic debugging |
+| Redis setup | `/redis-setup` | Lua Script, distributed locks, queues |
+| Kafka setup | `/kafka-setup` | Producer/Consumer setup |
+| Saga implementation | `/saga-pattern` | Distributed transactions |
+| Full check | `/check-all` | Build + test + lint + architecture |
+| Documentation | `/document` | ADR, API docs |
+| Performance test | `/performance-test` | k6 load test creation/execution |
 
-## 자가 리뷰 체크리스트 (코드 제출 전 필수)
+## Self-Review Checklist (Required before code submission)
 
-### 기능
-- [ ] 요구사항을 모두 구현했는가?
-- [ ] 엣지 케이스 (null, 빈 값, 동시성)를 처리했는가?
+### Functionality
+- [ ] Are all requirements implemented?
+- [ ] Are edge cases handled (null, empty values, concurrency)?
 
-### 아키텍처
-- [ ] Hexagonal Architecture 패키지 구조를 따르는가?
-- [ ] 의존성 방향이 domain을 향하는가?
+### Architecture
+- [ ] Does it follow Hexagonal Architecture package structure?
+- [ ] Do dependencies point toward domain?
 
-### 코루틴 안전성
-- [ ] 모든 I/O가 suspend fun인가?
-- [ ] GlobalScope를 사용하지 않았는가?
-- [ ] withTimeout이 외부 호출에 설정되었는가?
+### Coroutine Safety
+- [ ] Are all I/O operations suspend fun?
+- [ ] Is GlobalScope avoided?
+- [ ] Is withTimeout set for external calls?
 
-### 동시성/정합성
-- [ ] Redis 연산이 원자적인가?
-- [ ] Kafka 메시지가 멱등하게 처리되는가?
+### Concurrency/Consistency
+- [ ] Are Redis operations atomic?
+- [ ] Are Kafka messages processed idempotently?
 
-### 안정성/이중화
-- [ ] 외부 호출에 withTimeout과 재시도 패턴이 적용되었는가?
-- [ ] 장애 시 fallback/보상 로직이 있는가?
+### Stability/Redundancy
+- [ ] Are withTimeout and retry patterns applied to external calls?
+- [ ] Is there fallback/compensating logic for failures?
 
-### 가독성
-- [ ] 함수가 30줄 이내인가?
-- [ ] 함수명/변수명이 의도를 명확히 표현하는가?
-- [ ] 복잡한 비즈니스 로직에 한국어 주석이 있는가?
+### Readability
+- [ ] Are functions within 30 lines?
+- [ ] Do function/variable names clearly express intent?
+- [ ] Are complex business logic sections commented?
